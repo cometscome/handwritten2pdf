@@ -1,0 +1,92 @@
+% !TeX program = lualatex
+% 日本語講義ノートの最小テンプレート。本文・図は微分の動作例。
+% 新規講義では設定、説明、図を対象科目に合わせて置き換える。
+\RequirePackage{fix-cm}
+\documentclass[a4paper,11pt]{ltjsarticle}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage[margin=24mm,headheight=16pt]{geometry}
+\usepackage{booktabs}
+\usepackage{xcolor,tikz}
+\usetikzlibrary{arrows.meta,calc}
+\usepackage{needspace,fancyhdr}
+\usepackage[unicode,hidelinks]{hyperref}
+
+% 講義ごとの設定。著者・年度は推測せず、必要な場合に記入する。
+\newcommand{\CourseTitle}{講義ノート}
+\newcommand{\CourseSubtitle}{微分と接線：テンプレート使用例}
+\newcommand{\CourseAuthor}{}
+\newcommand{\CourseTerm}{}
+\hypersetup{pdftitle={\CourseTitle},pdfauthor={\CourseAuthor}}
+\newcommand{\vect}[1]{\bm{#1}}
+\newcommand{\dd}{\,\mathrm{d}}
+\numberwithin{equation}{section}
+\setlength{\emergencystretch}{2em}
+\definecolor{lnink}{HTML}{243B53}
+\tikzset{
+  ln axis/.style={-{Latex[length=2mm]},thin},
+  ln curve/.style={thick,lnink},
+  ln auxiliary/.style={dashed,gray},
+  ln vector/.style={-{Latex[length=2mm]},thick,lnink},
+  every picture/.append style={font=\small}
+}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\CourseTitle}
+\fancyhead[R]{\small\CourseTerm}
+\fancyfoot[C]{\thepage}
+% 短い図向け。長い図・キャプションには通常のfigure環境などを使う。
+\newcommand{\lecturefigure}[2]{%
+  \par\medskip\noindent
+  \begin{minipage}{\linewidth}\centering
+    #1\par\smallskip{\small #2}\par
+  \end{minipage}\par\medskip}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries\CourseTitle}\par\medskip
+  {\large\CourseSubtitle}\par
+  \ifx\CourseAuthor\empty\else\medskip\CourseAuthor\par\fi
+  \ifx\CourseTerm\empty\else\smallskip\CourseTerm\par\fi
+\end{center}
+
+\section{変化の割合と接線}
+% 実際の教材では、ここに原本PDFの通算ページなどを記録する。
+曲線上の一点での変化を調べるために、近くの二点を結ぶ直線の傾きを考える。
+関数$f$の点$x=a$における微分係数は、極限が存在するとき
+\begin{equation}
+  f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}{h}
+  \label{eq:derivative}
+\end{equation}
+で定義される。分子は関数の値の変化、分母は$x$の変化を表す。
+この比の極限が、曲線の接線の傾きになる。
+
+\subsection{例：二次関数}
+$f(x)=x^2$では、$h\ne0$として
+\[
+  \frac{(a+h)^2-a^2}{h}=2a+h
+\]
+となる。式\eqref{eq:derivative}で$h\to0$とすると$f'(a)=2a$を得る。
+したがって、点$(a,a^2)$を通る接線は$y=a^2+2a(x-a)$である。
+
+\lecturefigure{%
+\begin{tikzpicture}[x=2.3cm,y=1.3cm]
+  % 曲線・接点・接線を同じパラメータから計算する。
+  \def\tangentA{1}
+  \coordinate (P) at (\tangentA,{\tangentA*\tangentA});
+  \draw[ln axis] (-0.25,0)--(2.05,0) node[right] {$x$};
+  \draw[ln axis] (0,-0.45)--(0,3.35) node[above] {$y$};
+  \draw[ln curve,domain=0:1.72,samples=70] plot (\x,{\x*\x});
+  \node[above left] at (1.72,2.96) {$y=x^2$};
+  \draw[ln auxiliary] (\tangentA,0) node[below] {$a$}--(P);
+  \draw[ln auxiliary] (0,{\tangentA*\tangentA}) node[left] {$a^2$}--(P);
+  \draw[thick,dashed,domain=0.3:1.9,samples=2]
+    plot (\x,{\tangentA*\tangentA+2*\tangentA*(\x-\tangentA)});
+  \node[right] at (1.9,2.8) {接線};
+  \fill (P) circle (1.7pt) node[above left] {$P$};
+  \node[below left] at (0,0) {$O$};
+\end{tikzpicture}
+}{実線は$y=x^2$、破線は$a=1$における接線。接点$P$では両者の傾きが一致する。}
+
+図の接線の傾きは$2$である。接点から離れると曲線と接線はずれるため、
+接線による近似は接点の近くで用いる。
+\end{document}

@@ -1,0 +1,3 @@
+interface:
+  display_name: "手書き講義ノートの教材化"
+  short_description: "手書き原本の照合、説明の補充、TikZ作図とLaTeX・PDF教材の作成"
